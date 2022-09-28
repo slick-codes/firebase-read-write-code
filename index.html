@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Document</title>
+    <script src="https://www.gstatic.com/firebasejs/3.7.4/firebase.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.2.0/uuid.min.js"
+        integrity="sha512-X0CJvcClD8EXFn5Oq8BD5lIsznKDfxb0Sf9Wr8MCCTyAEWaAAxr0Jvm3qyofsmN7eSHMZ0PPQGjVKroLAfexrA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- <script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-auth.js"></script> -->
+    <!-- <script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-database.js"></script> -->
+</head>
+
+<body>
+
+    <div class="container">
+        <input type="text" placeholder="username" class="username"> <br> <br>
+        <input type="email" placeholder="email" class="email"> <br> <br>
+        <input type="url" placeholder="image url" class="url"> <br> <br>
+        <button class="submit">Save to database</button>
+        <div class="messageBox"></div>
+    </div>
+
+    <br>
+    <br>
+    <div class="output">
+        <table border="1">
+            <tr>
+                <th>ID</th>
+                <th>User Name</th>
+                <th>Email</th>
+                <th>imageurl</th>
+            </tr>
+        </table>
+    </div>
+
+
+
+
+
+    <script>
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBJv21GT60G2rT_bMJCdQ7C40WEKpIOfGw",
+            authDomain: "levelup-9cfa4.firebaseapp.com",
+            databaseURL: "https://levelup-9cfa4-default-rtdb.firebaseio.com",
+            projectId: "levelup-9cfa4",
+            storageBucket: "levelup-9cfa4.appspot.com",
+            messagingSenderId: "797558309042",
+            appId: "1:797558309042:web:cfe640ac84415f07e989ab"
+        };
+
+        // // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        // const database = firebase.database()
+
+        const messageBox = document.querySelector('.messageBox')
+        const submitButton = document.querySelector('button')
+
+        submitButton.onclick = async function () {
+
+            const username = document.querySelector('.username')
+            const email = document.querySelector('.email')
+            const imageUrl = document.querySelector('.url')
+
+            // generate new userId using the uuid library
+            const uniqueId = uuid.v4()
+
+
+            try {
+                messageBox.innerText = "Sending....."
+                await firebase.database().ref('users/' + uniqueId).set({
+                    username: username.value,
+                    email: email.value,
+                    profile_picture: imageUrl.value
+                });
+                messageBox.innerText = "Success!"
+
+            } catch (error) {
+                messageBox.innerText = "Something went wrong!"
+                console.log(error)
+            }
+        }
+
+        // var starCountRef = firebase.database().ref('users/');
+        // starCountRef.on('value', (snapshot) => {
+        //     const data = snapshot.val();
+        //     // you can update your dom with the data here it's in real time so you wont worry about rerendering the page 
+        //     const convertedData = Object.entries(data)
+        //     for (let i = 0; i < convertedData.length; i++) {
+        //         const table = document.querySelector('table')
+        //         console.log(convertedData[i])
+        //         const dataKey = convertedData[i][0]
+        //         const dataObject = convertedData[i][1]
+
+        //         table.innerHTML += `
+        //         <tr>
+        //             <th>${dataKey}</th>
+        //             <th>${dataObject.username}</th>
+        //             <th>${dataObject.email}</th>
+        //             <th><img src=${dataObject.profile_picture} width=200></th>
+        //         </tr>
+        //         `
+        //     }
+        // });
+
+        firebase.database().ref('users').get().then(snapshot => {
+            console.log(snapshot.val())
+        })
+    </script>
+</body>
+
+</html>
